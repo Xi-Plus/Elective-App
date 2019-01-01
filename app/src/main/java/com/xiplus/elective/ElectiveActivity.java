@@ -91,7 +91,7 @@ public class ElectiveActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void temp) {
             if (this.user.isLogin) {
-                mLoginTextView.setText("已登入");
+                mLoginTextView.setText(String.format("已登入：(%s) %s / %s", this.user.accttypename, this.user.account, this.user.name));
             } else {
                 mLoginTextView.setText("未登入");
             }
