@@ -128,7 +128,7 @@ public class ElectiveActivity extends AppCompatActivity {
                         tv.setText(cla.getString(col));
 
                         TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(10, 0, 10, 0);
+                        params.setMargins(0, 0, 20, 0);
 
                         System.out.println(col+"="+cla.getString(col));
                         row.addView(tv, params);
