@@ -23,19 +23,16 @@
             android:id="@+id/loginText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="檢查登入狀態中" />
+            android:text="@string/text_checking_login" />
 
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:onClick="goElective"
-            android:text="選課"
+            android:text="@string/text_elective"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,30 +44,26 @@
 
             <Button
                 android:id="@+id/btn_login"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="72dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:onClick="goLogin"
-                android:text="登入"
+                android:text="@string/text_login"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/btn_logout"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="72dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:onClick="goLogout"
-                android:text="登出"
+                android:text="@string/text_logout"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

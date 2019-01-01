@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -250,15 +250,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            System.out.println("start login");
-
             Map<String,Object> parm = new LinkedHashMap<>();
             parm.put("action", "login");
             parm.put("type", mAccttype);
             parm.put("account", mAccount);
             parm.put("password", mPassword);
-
-            System.out.println(parm.toString());
             return new Api(getApplicationContext()).post(parm);
         }
 

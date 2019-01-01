@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="16dp"
@@ -38,7 +38,7 @@
                 android:id="@+id/loginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="檢查登入狀態中" />
+                android:text="@string/text_checking_login" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,7 +49,7 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="星期" />
+                    android:text="@string/text_day" />
 
                 <Spinner
                     android:id="@+id/select_day"
@@ -69,7 +69,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="節次" />
+                    android:text="@string/text_period" />
 
                 <Spinner
                     android:id="@+id/select_period"
@@ -80,11 +80,11 @@
 
                 <Button
                     android:id="@+id/button2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="goSearch"
-                    android:text="查詢" />
+                    android:text="@string/text_search" />
 
             </LinearLayout>
 
@@ -105,7 +105,7 @@
                         android:id="@+id/textView9"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="查詢結果" />
+                        android:text="@string/text_search_result" />
 
                     <TableLayout
                         android:id="@+id/search_result"
@@ -135,7 +135,7 @@
                         android:id="@+id/textView10"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="已選課程" />
+                        android:text="@string/text_selected_class" />
 
                     <TableLayout
                         android:id="@+id/elective_table"
@@ -161,7 +161,7 @@
                         android:id="@+id/textView11"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="課表" />
+                        android:text="@string/text_class_table" />
 
                     <TableLayout
                         android:id="@+id/calendar_table"
