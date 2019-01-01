@@ -150,7 +150,7 @@
                 android:id="@+id/calendar_table_group"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingBottom="30dp">
+                android:layout_marginBottom="30dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"

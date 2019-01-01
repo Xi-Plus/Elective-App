@@ -55,6 +55,7 @@ public class ElectiveActivity extends AppCompatActivity {
 
         this.user = new User(getApplicationContext());
         new ElectiveActivity.checkLogin(user).execute((Void) null);
+        showProgress(true);
         new ElectiveActivity.showElective(user).execute((Void) null);
     }
 
@@ -125,18 +126,18 @@ public class ElectiveActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONObject res) {
             JSONObject classes = (JSONObject) res.opt("result");
-            System.out.println(classes.toString());
             mSearchResult.removeAllViewsInLayout();
             Iterator<String> classids = classes.keys();
 
-            TableRow row = new TableRow(ElectiveActivity.this);
+            TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 0, 20, 0);
+            TableRow row;
+            TextView tv;
+
+            row = new TableRow(ElectiveActivity.this);
             for (String col : new String[]{"編號", "名稱", "學分數", "時間"}) {
-                TextView tv = new TextView(ElectiveActivity.this);
+                tv = new TextView(ElectiveActivity.this);
                 tv.setText(col);
-
-                TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                params.setMargins(4, 4, 4, 4);
-
                 row.addView(tv, params);
             }
             mSearchResult.addView(row);
@@ -145,18 +146,12 @@ public class ElectiveActivity extends AppCompatActivity {
             try {
                 while (classids.hasNext()) {
                     String classid = classids.next();
-                    System.out.println("classid="+classid);
                     JSONObject cla = (JSONObject) classes.get(classid);
 
                     row = new TableRow(ElectiveActivity.this);
                     for (String col : clonames) {
-                        TextView tv = new TextView(ElectiveActivity.this);
+                        tv = new TextView(ElectiveActivity.this);
                         tv.setText(cla.getString(col));
-
-                        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0, 0, 20, 0);
-
-                        System.out.println(col+"="+cla.getString(col));
                         row.addView(tv, params);
                     }
                     mSearchResult.addView(row);
@@ -202,25 +197,24 @@ public class ElectiveActivity extends AppCompatActivity {
             if (!this.user.isLogin) {
                 findViewById(R.id.elective_table_group).setVisibility(View.GONE);
                 findViewById(R.id.calendar_table_group).setVisibility(View.GONE);
-                System.out.println("not login, skip show");
+                showProgress(false);
                 return;
             }
 
-            if (this.elective.optString("result").equals("ok")) {
-                System.out.println("show elective");
+            TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+            params.setMargins(4, 4, 4, 4);
+            TableRow row;
+            TextView tv;
 
+            if (this.elective.optString("result").equals("ok")) {
                 mElectiveResult.removeAllViewsInLayout();
                 JSONObject classes = this.elective.optJSONObject("data");
                 Iterator<String> classids = classes.keys();
 
-                TableRow row = new TableRow(ElectiveActivity.this);
+                row = new TableRow(ElectiveActivity.this);
                 for (String col : new String[]{"編號", "名稱", "學分數", "時間", "退選"}) {
-                    TextView tv = new TextView(ElectiveActivity.this);
+                    tv = new TextView(ElectiveActivity.this);
                     tv.setText(col);
-
-                    TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(4, 4, 4, 4);
-
                     row.addView(tv, params);
                 }
                 mElectiveResult.addView(row);
@@ -229,22 +223,17 @@ public class ElectiveActivity extends AppCompatActivity {
                 try {
                     while (classids.hasNext()) {
                         String classid = classids.next();
-                        System.out.println("classid="+classid);
                         JSONObject cla = (JSONObject) classes.get(classid);
 
                         row = new TableRow(ElectiveActivity.this);
                         for (String col : clonames) {
-                            TextView tv = new TextView(ElectiveActivity.this);
+                            tv = new TextView(ElectiveActivity.this);
                             tv.setText(cla.getString(col));
-                            TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                            params.setMargins(0, 0, 20, 0);
                             row.addView(tv, params);
                         }
 
-                        TextView tv = new TextView(ElectiveActivity.this);
+                        tv = new TextView(ElectiveActivity.this);
                         tv.setText("退選");
-                        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0, 0, 20, 0);
                         row.addView(tv, params);
 
                         mElectiveResult.addView(row);
@@ -257,16 +246,9 @@ public class ElectiveActivity extends AppCompatActivity {
             }
 
             if (this.calendar.optString("result").equals("ok")) {
-                System.out.println("show calendar");
-
                 mCalendarResult.removeAllViewsInLayout();
                 JSONObject classes = this.calendar.optJSONObject("data");
                 Iterator<String> classids = classes.keys();
-
-                TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                params.setMargins(4, 4, 4, 4);
-                TextView tv;
-                TableRow row;
 
                 row = new TableRow(ElectiveActivity.this);
                 String[] dayname = new String[]{"", "一", "二", "三", "四", "五", "六", "日"};
@@ -290,9 +272,7 @@ public class ElectiveActivity extends AppCompatActivity {
 
                         String claname = "";
                         if (classes.has(daystr) && classes.optJSONObject(daystr).has(periodstr)) {
-                            System.out.println(classes.optJSONObject(daystr).optString(periodstr));
                             claname = classes.optJSONObject(daystr).optString(periodstr);
-                            System.out.println(daystr+" "+periodstr+" "+claname);
                         }
                         tv = new TextView(ElectiveActivity.this);
                         tv.setText(claname);
