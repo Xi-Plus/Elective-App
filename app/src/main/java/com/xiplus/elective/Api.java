@@ -47,27 +47,20 @@ public class Api extends Application {
     }
 
     private CookieManager getCookieManager() {
-        System.out.println("get cookie manager");
-
         CookieManager cookieManager = new CookieManager();
         CookieStore cookieStore = cookieManager.getCookieStore();
 
         SharedPreferences prefs = this.context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String temp = prefs.getString(COOKIE_NAME, "");
-        System.out.println("get = "+ temp);
         Map<String,String> cookies = (Map<String,String>) this.unserialize(temp);
-        System.out.println("get cookie len="+cookies.size());
 
         for (Map.Entry<String,String> cookie : cookies.entrySet()) {
             cookieStore.add(null, new HttpCookie(cookie.getKey(), cookie.getValue()));
-            System.out.println("get cookie: "+cookie.getKey()+" " + cookie.getValue());
         }
         return cookieManager;
     }
 
     private void saveCookieManager(CookieManager cookieManager) {
-        System.out.println("save cookie manager");
-
         CookieStore cookieStore = cookieManager.getCookieStore();
 
         SharedPreferences.Editor editor = this.context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
@@ -75,15 +68,7 @@ public class Api extends Application {
         Map<String,String> cookies3 = new LinkedHashMap<>();
         for (HttpCookie ck : cookieStore.getCookies()) {
             cookies3.put(ck.getName(), ck.getValue());
-            System.out.println("Cookie name: " + ck.getName());
-            System.out.println("Domain: " + ck.getDomain());
-            System.out.println("Max age: " + ck.getMaxAge());
-            System.out.println("Server path: " + ck.getPath());
-            System.out.println("Is secured: " + ck.getSecure());
-            System.out.println("Cookie value: " + ck.getValue());
-            System.out.println("Cookie protocol version: " + ck.getVersion());
         }
-        System.out.println("save = " + this.serialize(cookies3));
         editor.putString(COOKIE_NAME, this.serialize(cookies3));
         editor.apply();
     }
@@ -141,10 +126,8 @@ public class Api extends Application {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             conn.setRequestProperty("Accept","application/json");
-//            conn.setRequestProperty("Cookie", TextUtils.join(";",  cookieStore.getCookies()));
             for (HttpCookie cookie : cookieStore.getCookies()) {
                 conn.setRequestProperty("Cookie", cookie.getName() + "=" + cookie.getValue());
-                System.out.println("set cookie: " + cookie.getName() + "=" + cookie.getValue());
             }
             conn.setDoOutput(true);
             conn.setDoInput(true);
@@ -164,9 +147,7 @@ public class Api extends Application {
 
             List<String> cookies2 = conn.getHeaderFields().get("Set-Cookie");
             if (cookies2 != null) {
-                System.out.println("set-cookie len = " + cookies2.size());
                 for (String cookie : cookies2) {
-                    System.out.println("set-cookie: " + cookie);
                     cookieStore.add(null, HttpCookie.parse(cookie).get(0));
                 }
             }
@@ -176,8 +157,6 @@ public class Api extends Application {
             System.out.println("response=" + response.toString());
 
             JSONObject reader = new JSONObject(response.toString());
-
-            System.out.println(reader.toString());
 
             this.saveCookieManager(cookieManager);
 
