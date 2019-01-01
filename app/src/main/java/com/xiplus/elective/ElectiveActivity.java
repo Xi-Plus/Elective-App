@@ -1,7 +1,11 @@
 package com.xiplus.elective;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +32,7 @@ public class ElectiveActivity extends AppCompatActivity {
     private Spinner mDaySpinner;
     private Spinner mPeriodSpinner;
     private TableLayout mSearchResult;
+    private View mProgressView;
 
     private User user;
     private final String[] dayString = new String[]{"", "1", "2", "3", "4", "5", "6", "7"};
@@ -42,6 +47,7 @@ public class ElectiveActivity extends AppCompatActivity {
         mDaySpinner = findViewById(R.id.select_day);
         mPeriodSpinner = findViewById(R.id.select_period);
         mSearchResult = findViewById(R.id.search_result);
+        mProgressView = findViewById(R.id.search_progress);
 
         this.user = new User(getApplicationContext());
         new ElectiveActivity.checkLogin(user).execute((Void) null);
@@ -51,7 +57,22 @@ public class ElectiveActivity extends AppCompatActivity {
         String day = dayString[mDaySpinner.getSelectedItemPosition()];
         String period = periodString[mPeriodSpinner.getSelectedItemPosition()];
 
+        showProgress(true);
         new ElectiveActivity.doSearch(day, period).execute((Void) null);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     public class checkLogin extends AsyncTask<Void, Void, Void> {
@@ -138,6 +159,8 @@ public class ElectiveActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            showProgress(false);
         }
     }
 }
