@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         new checkLogin(user).execute((Void) null);
     }
 
+    public void goElective(View view) {
+        Intent intent = new Intent(MainActivity.this, ElectiveActivity.class);
+        startActivity(intent);
+    }
+
     public void goLogin(View view) {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);

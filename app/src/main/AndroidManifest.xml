@@ -21,7 +21,10 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".ElectiveActivity"
+            android:label="選課" />
     </application>
 
 </manifest>
