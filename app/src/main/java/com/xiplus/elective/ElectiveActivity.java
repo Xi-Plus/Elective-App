@@ -140,9 +140,6 @@ public class ElectiveActivity extends AppCompatActivity {
         protected void onPostExecute(JSONObject res) {
             JSONObject classes = res.optJSONObject("result");
             mSearchResult.removeAllViewsInLayout();
-            if (classes == null) {
-                classes = new JSONObject();
-            }
             Iterator<String> classids = classes.keys();
 
             TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, 100);
@@ -151,14 +148,20 @@ public class ElectiveActivity extends AppCompatActivity {
             TextView tv;
 
             row = new TableRow(ElectiveActivity.this);
-            if (user.isLogin) {
+            if (classids.hasNext()) {
+                if (user.isLogin) {
+                    tv = new TextView(ElectiveActivity.this);
+                    tv.setText("選課");
+                    row.addView(tv, params);
+                }
+                for (String col : new String[]{"編號", "名稱", "學分數", "時間"}) {
+                    tv = new TextView(ElectiveActivity.this);
+                    tv.setText(col);
+                    row.addView(tv, params);
+                }
+            } else {
                 tv = new TextView(ElectiveActivity.this);
-                tv.setText("選課");
-                row.addView(tv, params);
-            }
-            for (String col : new String[]{"編號", "名稱", "學分數", "時間"}) {
-                tv = new TextView(ElectiveActivity.this);
-                tv.setText(col);
+                tv.setText("查無任何結果");
                 row.addView(tv, params);
             }
             mSearchResult.addView(row);
@@ -266,15 +269,18 @@ public class ElectiveActivity extends AppCompatActivity {
             if (this.elective.optString("result").equals("ok")) {
                 mElectiveResult.removeAllViewsInLayout();
                 JSONObject classes = this.elective.optJSONObject("data");
-                if (classes == null) {
-                    classes = new JSONObject();
-                }
                 Iterator<String> classids = classes.keys();
 
                 row = new TableRow(ElectiveActivity.this);
-                for (String col : new String[]{"退選", "編號", "名稱", "學分數", "時間"}) {
+                if (classids.hasNext()) {
+                    for (String col : new String[]{"退選", "編號", "名稱", "學分數", "時間"}) {
+                        tv = new TextView(ElectiveActivity.this);
+                        tv.setText(col);
+                        row.addView(tv, params);
+                    }
+                } else {
                     tv = new TextView(ElectiveActivity.this);
-                    tv.setText(col);
+                    tv.setText("查無任何結果");
                     row.addView(tv, params);
                 }
                 mElectiveResult.addView(row);
