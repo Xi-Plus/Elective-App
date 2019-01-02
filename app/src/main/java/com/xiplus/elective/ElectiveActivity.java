@@ -138,8 +138,11 @@ public class ElectiveActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject res) {
-            JSONObject classes = (JSONObject) res.opt("result");
+            JSONObject classes = res.optJSONObject("result");
             mSearchResult.removeAllViewsInLayout();
+            if (classes == null) {
+                classes = new JSONObject();
+            }
             Iterator<String> classids = classes.keys();
 
             TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, 100);
