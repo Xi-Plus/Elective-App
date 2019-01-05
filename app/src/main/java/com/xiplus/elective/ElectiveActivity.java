@@ -109,7 +109,15 @@ public class ElectiveActivity extends AppCompatActivity {
             if (this.user.isLogin) {
                 mLoginTextView.setText(String.format("已登入：(%s) %s / %s", this.user.accttypename, this.user.account, this.user.name));
             } else {
-                mLoginTextView.setText("未登入");
+                switch (this.user.error) {
+                    case "no_network":
+                    case "timeout":
+                        mLoginTextView.setText("沒有網路連線");
+                        break;
+
+                    default:
+                        mLoginTextView.setText("未登入");
+                }
             }
         }
     }
@@ -138,7 +146,24 @@ public class ElectiveActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject res) {
-            JSONObject classes = res.optJSONObject("result");
+            if (!res.optString("result").equals("ok")) {
+                switch (res.optString("result", "")) {
+                    case "no_network":
+                        Toast.makeText(getApplicationContext(), "查詢失敗，請檢查網路連線", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case "timeout":
+                        Toast.makeText(getApplicationContext(), "查詢失敗，連線逾時，請重試", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    default:
+                        Toast.makeText(getApplicationContext(), "查詢失敗，未知錯誤", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                showProgress(false);
+                return;
+            }
+            JSONObject classes = res.optJSONObject("data");
             mSearchResult.removeAllViewsInLayout();
             Iterator<String> classids = classes.keys();
 
@@ -382,14 +407,21 @@ public class ElectiveActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject res) {
-            if (res.optString("result").equals("success")) {
-                Toast.makeText(getApplicationContext(), "選課成功", Toast.LENGTH_SHORT).show();
-                new ElectiveActivity.showElective(user).execute((Void) null);
-                goSearch();
-            } else {
-                Toast.makeText(getApplicationContext(), "選課失敗", Toast.LENGTH_SHORT).show();
-            }
+            switch (res.optString("result")) {
+                case "success":
+                    Toast.makeText(getApplicationContext(), "選課成功", Toast.LENGTH_SHORT).show();
+                    new ElectiveActivity.showElective(user).execute((Void) null);
+                    goSearch();
+                    break;
 
+                case "no_network":
+                case "timeout":
+                    Toast.makeText(getApplicationContext(), "選課失敗，請檢查網路連線並重試", Toast.LENGTH_SHORT).show();
+                    break;
+
+                default:
+                    Toast.makeText(getApplicationContext(), "選課失敗", Toast.LENGTH_SHORT).show();
+            }
             showProgress(false);
         }
     }
@@ -411,14 +443,21 @@ public class ElectiveActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject res) {
-            if (res.optString("result").equals("success")) {
-                Toast.makeText(getApplicationContext(), "退選成功", Toast.LENGTH_SHORT).show();
-                new ElectiveActivity.showElective(user).execute((Void) null);
-                goSearch();
-            } else {
-                Toast.makeText(getApplicationContext(), "退選失敗", Toast.LENGTH_SHORT).show();
-            }
+            switch (res.optString("result")) {
+                case "success":
+                    Toast.makeText(getApplicationContext(), "退選成功", Toast.LENGTH_SHORT).show();
+                    new ElectiveActivity.showElective(user).execute((Void) null);
+                    goSearch();
+                    break;
 
+                case "no_network":
+                case "timeout":
+                    Toast.makeText(getApplicationContext(), "退選失敗，請檢查網路連線並重試", Toast.LENGTH_SHORT).show();
+                    break;
+
+                default:
+                    Toast.makeText(getApplicationContext(), "退選失敗", Toast.LENGTH_SHORT).show();
+            }
             showProgress(false);
         }
     }

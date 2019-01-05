@@ -260,20 +260,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onPostExecute(final JSONObject res) {
-            final String result = (String) res.opt("result");
+            if (!res.optString("result").equals("ok")) {
+                switch (res.optString("result", "")) {
+                    case "no_network":
+                    case "timeout":
+                        Toast.makeText(getApplicationContext(), "登入失敗，請檢查網路連線", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    default:
+                        Toast.makeText(getApplicationContext(), "登入失敗，未知錯誤", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            } else {
+                switch (res.optString("data")) {
+                    case "success":
+                        Toast.makeText(getApplicationContext(), "登入成功", Toast.LENGTH_SHORT).show();
+                        finish();
+                        break;
+
+                    case "failed":
+                        mAccountView.setError("帳號或密碼錯誤");
+                        mPasswordView.setError("帳號或密碼錯誤");
+                }
+            }
             mAuthTask = null;
             showProgress(false);
-
-            switch (result) {
-                case "success":
-                    Toast.makeText(getApplicationContext(), "登入成功", Toast.LENGTH_SHORT).show();
-                    finish();
-                    break;
-
-                case "failed":
-                    mAccountView.setError("帳號或密碼錯誤");
-                    mPasswordView.setError("帳號或密碼錯誤");
-            }
         }
 
         @Override

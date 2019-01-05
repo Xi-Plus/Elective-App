@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        System.out.println("Main onStart");
         super.onStart();
 
         new checkLogin(user).execute((Void) null);
@@ -76,7 +75,14 @@ public class MainActivity extends AppCompatActivity {
                 mLoginButton.setVisibility(View.GONE);
                 mLogoutButton.setVisibility(View.VISIBLE);
             } else {
-                mLoginTextView.setText("未登入");
+                switch (this.user.error) {
+                    case "no_network":
+                        mLoginTextView.setText("沒有網路連線");
+                        break;
+
+                    default:
+                        mLoginTextView.setText("未登入");
+                }
                 mLoginButton.setVisibility(View.VISIBLE);
                 mLogoutButton.setVisibility(View.GONE);
             }
@@ -99,18 +105,30 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject res) {
-            final String result = (String) res.opt("result");
+            if (res.optString("result").equals("ok")) {
+                switch (res.optString("data")) {
+                    case "success":
+                        mLoginTextView.setText("未登入");
+                        mLoginButton.setVisibility(View.VISIBLE);
+                        mLogoutButton.setVisibility(View.GONE);
+                        Toast.makeText(getApplicationContext(), "已登出", Toast.LENGTH_SHORT).show();
+                        break;
 
-            switch (result) {
-                case "success":
-                    mLoginTextView.setText("未登入");
-                    mLoginButton.setVisibility(View.VISIBLE);
-                    mLogoutButton.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), "已登出", Toast.LENGTH_SHORT).show();
-                    break;
+                    default:
+                        Toast.makeText(getApplicationContext(), "登出失敗，未知錯誤", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            } else {
+                switch (res.optString("result")) {
+                    case "no_network":
+                    case "timeout":
+                        Toast.makeText(getApplicationContext(), "登出失敗，請檢查網路連線", Toast.LENGTH_SHORT).show();
+                        break;
 
-                case "failed":
-
+                    default:
+                        Toast.makeText(getApplicationContext(), "登出失敗，未知錯誤", Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
         }
     }

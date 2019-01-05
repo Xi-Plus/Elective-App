@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class User {
     boolean isLogin = false;
+    String error = "";
     String account = "";
     String name = "";
     String accttype = "";
@@ -27,17 +28,25 @@ public class User {
         Map<String,Object> parm = new LinkedHashMap<>();
         parm.put("action", "checklogin");
         JSONObject res = new Api(context).post(parm);
-        this.isLogin = res.optBoolean("islogin");
-        if (this.isLogin) {
-            this.account = res.optString("account");
-            this.accttype = res.optString("accttype");
-            if (this.accttype.equals("student")) {
-                this.accttypename = "學生";
+        if (res.optString("result").equals("ok")) {
+            JSONObject data = res.optJSONObject("data");
+            this.isLogin = data.optBoolean("islogin");
+            this.error = "";
+            if (this.isLogin) {
+                this.account = data.optString("account");
+                this.accttype = data.optString("accttype");
+                if (this.accttype.equals("student")) {
+                    this.accttypename = "學生";
+                } else {
+                    this.accttypename = "管理員";
+                }
+                this.name = data.optString("name");
             } else {
-                this.accttypename = "管理員";
+                this.accttype = "";
             }
-            this.name = res.optString("name");
         } else {
+            this.isLogin = false;
+            this.error = res.optString("result", "");
             this.accttype = "";
         }
         return this.isLogin;

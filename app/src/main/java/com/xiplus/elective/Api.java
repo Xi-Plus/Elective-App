@@ -24,9 +24,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import android.util.Base64;
+
+import java.net.UnknownHostException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +126,8 @@ public class Api extends Application {
 
             URL url = new URL(api);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+            conn.setConnectTimeout(5 * 1000);
+            conn.setReadTimeout(5 * 1000);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             conn.setRequestProperty("Accept","application/json");
@@ -162,6 +167,12 @@ public class Api extends Application {
 
             return reader;
 
+        } catch (UnknownHostException e) {
+            System.out.println("UnknownHostException");
+            return this.error("no_network");
+        } catch (SocketTimeoutException e) {
+            System.out.println("SocketTimeoutException");
+            return this.error("timeout");
         } catch (IOException e) {
             e.printStackTrace();
             return this.error();
@@ -172,9 +183,13 @@ public class Api extends Application {
     }
 
     public JSONObject error() {
+        return this.error("");
+    }
+
+    public JSONObject error(String reason) {
         JSONObject result = new JSONObject();
         try {
-            result.put("result", "failed");
+            result.put("result", reason);
         } catch (JSONException e) {
             e.printStackTrace();
         }
